@@ -49,7 +49,7 @@ class NiftiConvert(object):
             if ignore_exceptions:
                 print('{} occured; passing...'.format(e))
             else:
-                raise Exception(e)
+                raise e
 
 
 class BidsFormat(object):
