@@ -24,7 +24,7 @@ class NiftiConvert(object):
         self.data_path = data_path
         self.output_path = output_path
 
-    def convert(self, compress=True):
+    def convert(self, compress=True, ignore_exceptions=True):
         """Runs DICOM to NIfTI conversion.
 
         Parameters
@@ -46,8 +46,10 @@ class NiftiConvert(object):
             ).run()
         except Exception as e:
             # Will get an innocuous trait error after each participant
-            print('{} occured; passing...'.format(e))
-            pass
+            if ignore_exceptions:
+                print('{} occured; passing...'.format(e))
+            else:
+                raise Exception(e)
 
 
 class BidsFormat(object):
