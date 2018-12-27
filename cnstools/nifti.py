@@ -7,34 +7,47 @@ from nipype.interfaces.dcm2nii import Dcm2niix
 from traitlets import TraitError
 
 
-def _convert_to_nifti(input_dir, output_dir, compress=True):
-
-    os.makedirs(output_dir, exist_ok=True)
-    compress_flag = 'i' if compress else 'n'
-
-    try:
-        Dcm2niix(
-            source_dir=input_dir,
-            output_dir=output_dir,
-            out_filename='%t%p%s',
-            compress=compress_flag,
-            single_file=False
-        ).run()
-    except Exception as e:
-        # Will get an innocuous trait error after each participant
-        print('{} occured; passing...'.format(e))
-        pass
-
-
 class NiftiConvert(object):
 
-    def __init__(self, data_path, output_path, compress=True):
+    def __init__(self, data_path, output_path):
+        """Convert raw DICOMs into useable NIfTI files for a given
+        dataset/participant.
+
+        Parameters
+        ----------
+        data_path : [type]
+            Raw DICOM directory for a single participant.
+        output_path : [type]
+            Output directory for NIfTI files.
+
+        """
         self.data_path = data_path
         self.output_path = output_path
-        self.compressed = compress
 
-    def convert(self):
-        _convert_to_nifti(self.data_path, self.output_path, self.compressed)
+    def convert(self, compress=True):
+        """Runs DICOM to NIfTI conversion.
+
+        Parameters
+        ----------
+        compress : bool, optional
+            Generate compressed or uncompressed nifti images (the default is
+            True, which returns `*.nii.gz`)
+
+        """
+        os.makedirs(self.output_path, exist_ok=True)
+        compress_flag = 'i' if compress else 'n'
+        try:
+            Dcm2niix(
+                source_dir=self.data_path,
+                output_dir=self.output_path,
+                out_filename='%t%p%s',
+                compress=compress_flag,
+                single_file=False
+            ).run()
+        except Exception as e:
+            # Will get an innocuous trait error after each participant
+            print('{} occured; passing...'.format(e))
+            pass
 
 
 class BidsFormat(object):
