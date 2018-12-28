@@ -10,7 +10,6 @@ from traitlets import TraitError
 
 
 class NiftiConvert(object):
-
     def __init__(self, data_path, output_path):
         """Convert raw DICOMs into useable NIfTI files for a given
         dataset/participant.
@@ -25,6 +24,7 @@ class NiftiConvert(object):
         """
         self.data_path = data_path
         self.output_path = output_path
+
 
     def convert(self, compress=True, ignore_exceptions=True):
         """Runs DICOM to NIfTI conversion.
@@ -55,6 +55,5 @@ class NiftiConvert(object):
 
 
 class BidsFormat(object):
-
     def __init__(self):
         pass
