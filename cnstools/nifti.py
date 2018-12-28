@@ -1,8 +1,10 @@
-import sys
+"""NIfTI management tools.
+
+This module is designed to handle NIfTI file management, which includes
+conversion, sorting, and BIDS formatting.
+
+"""
 import os
-import re
-import numpy as np
-import nipype
 from nipype.interfaces.dcm2nii import Dcm2niix
 from traitlets import TraitError
 
