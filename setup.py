@@ -12,7 +12,8 @@ setup(
     install_requires=[
         'numpy>=1.15',
         'scipy>=1.1',
-        'nipype>=1.1.1'
+        'nipype>=1.1.1',
+        'dcm2bids>=1.1.8'
     ],
     tests_require=[
         'pytest',
