@@ -11,6 +11,7 @@ from traitlets import TraitError
 
 
 def _num_format(x):
+    x = int(x)
     return '0{}'.format(x) if x < 10 else str(x)
 
 
@@ -32,7 +33,8 @@ class BidsData(object):
 
     def add_subject(self, sub_id, dicom_path, config, session=None):
 
-        bids = Dcm2bids(dicom_path, sub_id, config, session=session)
+        bids = Dcm2bids(dicom_path, sub_id, config, output_dir=self.data_path,
+                        session=session)
         bids.run()
 
         self.__sub_id_list.append(sub_id)
