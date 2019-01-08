@@ -6,7 +6,7 @@ conversion, sorting, and BIDS formatting.
 """
 import os
 import pandas as pd
-from dcm2bids.dcm2bids import Dcm2bids
+import subprocess
 from traitlets import TraitError
 
 
@@ -31,18 +31,29 @@ class BidsData(object):
         self.__sub_id_list = []
 
 
-    def add_subject(self, sub_id, dicom_path, config, session=None):
-
-        bids = Dcm2bids(dicom_path, sub_id, config, output_dir=self.data_path,
-                        session=session)
-        bids.run()
-
+    def add_subject(self, raw_id, sub_id, dicom_path, config, session=None):
+        
+        
+        cmd = "dcm2bids -p {} -c {} -o {}".format(sub_id, config, self.data_path)
+        
+        if len(dicom_path.split(" ")) > 1:
+            # space in path
+            cmd += " -d '{}'".format(dicom_path)
+        else:
+            cmd += " -d {}".format(dicom_path)
+            
+        if session is not None:
+            cmd += " -s {}".format(session)
+        
+        print(cmd)
+        subprocess.run(cmd, shell=True)
+        
         self.__sub_id_list.append(sub_id)
         if sub_id not in self.__sub_id_list:
             # only add one pair for a subject; prevent duplicates arising
             # from multiple sessions
             sub_id_pair = {
-                'participant_original': os.path.basename(dicom_path),
+                'participant_original': raw_id,
                 'participant_id': sub_id
             }
             self.sub_id_pairs.append(sub_id_pair)
@@ -70,4 +81,3 @@ class BidsData(object):
         except KeyError:
             print("Participant data incomplete or incorrect. Must include "
                   "columns 'participant_id', 'sex', and 'age'")
-
